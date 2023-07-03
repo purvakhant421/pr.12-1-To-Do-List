@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/all.min.css">
+    <title>TO-DO List</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <div id="newtask">
+            <h1>My To Do List</h1>
+            <input type="text" id="blank" placeholder="Add Task..">
+            <button id="add" onclick="task()">Add</button>
+        </div>
+        <div id="tasks"></div>
+    </div>
+    <script>
+        
+const all_Task = [];
+// add a new task
+function task() {
+    let task = document.getElementById('blank').value;
+    if (task.length == 0 || task == "") {
+        alert("Please enter a task!");
+    } else {
+        all_Task.push(task);// Add task for array
+        show_();// Update list
+        document.getElementById('blank').value = "";// Clear field input
+    }
+}
+// update the list
+function show_() {
+    let ul_li = "";
+    all_Task.forEach(function(value, index) {
+        ul_li += `
+            <div class="task">
+                <ul class="ul">
+                    <li id="taskname">${value}</li>
+                </ul>
+                <button class="delete" onclick="confirmDelete(${index})" id="deleteId${index}"><i class="far fa-trash-alt"></i></button>
+                <button class="undo" onclick="undoTask(${index})" id="undoId${index}" style="display:none">Undo</button>
+            </div>
+            <br>
+        `;
+    });
+    document.getElementById('tasks').innerHTML = ul_li;
+}
+// confirm task deletion
+function confirmDelete(del_index) {
+    all_Task.map((val , index ,array)=>{
+        if(index == del_index){
+            document.getElementById(`deleteId${index}`).style.display = "none";// Hide delete button
+            document.getElementById(`undoId${index}`).style.display = "block";// Show undo button
+        }
+    })
+    set_Time = setTimeout(deleteTask,2000,del_index);// Set a timeout for delete the task after 2 seconds
+    
+// delete function 
+function deleteTask(del_index) {
+    all_Task.splice(del_index, 1);// Remove task in array
+    show_();// Update function
+} 
+// undo for after delete
+function undoTask(del_index) {
+    all_Task.map((val,index,array)=>{
+        if(index == del_index){
+            document.getElementById(`deleteId${index}`).style.display = "block"; // Show delete button
+            document.getElementById(`undoId${index}`).style.display = "none"; // Hide undo button
+        }
+    })
+    clearTimeout(set_Time);// Clear timeout
+}
+}
+    </script>
+</body>
+</html> 
